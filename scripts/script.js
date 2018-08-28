@@ -77,7 +77,12 @@ function initializeBoard()
         {
             let countDownTimer = setInterval(() => {
                 timer.$min.text(Math.floor(timer.time / 60));
-                timer.$sec.text(Math.ceil(timer.time % 60));
+                let seconds = Math.ceil(timer.time % 60);
+                if (seconds === 0)
+                {
+                    seconds = '00';
+                }
+                timer.$sec.text(seconds);
                 //  animate({
                 //             opacity: 0
                 //         }, 300, function () {
@@ -145,9 +150,14 @@ function reverse()
 
         if (!cardsArray[num].isHidden)
         {
-            $cardEl.css({
-                backgroundImage: 'url(../res/animals/' + cardsArray[num].bg + ')',
-                backgroundSize: 'cover'
+            $cardEl
+                .transition({
+                    perspective: '160px',
+                    rotateY: '180deg'
+                }, 'slow')
+                .css({
+                        backgroundImage: 'url(../res/animals/' + cardsArray[num].bg + ')',
+                        backgroundSize: 'cover'
             });
 
             if (pair.first === 0) {
@@ -212,7 +222,11 @@ function reverseCard(card)
 
     setTimeout(() =>
         {
-            $(card).css({
+        $(card).transition({
+                rotateY: '0deg',
+                // perspective: '160px'
+            }, 'slow')
+            .css({
                 backgroundImage: 'url(/res/full-bloom.png)',
                 backgroundSize: 'initial'
             });
