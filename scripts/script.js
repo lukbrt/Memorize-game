@@ -32,9 +32,14 @@ let pair = {
             //     $(this).addClass('hidden');
             // });
             // this.second.fadeOut(300).addClass('hidden');
-            passedCounter += 2;
         }
     };
+let timer = {
+    $timer: $('timer'),
+    $min: $('#timer span#min'),
+    $sec: $('#timer span#sec'),
+    time: 120    //120
+};
 
 let swapCounter = 0;
 // let first = false, second = false;
@@ -59,7 +64,8 @@ function initializeBoard()
 {
     let $newItem;
 
-    for (let i = 0; i < cardAmount; i++) {
+    for (let i = 0; i < cardAmount; i++) 
+    {
         $newItem = $('<div class="card"></div>');
         $newItem.attr('id', 'card' + i);
         $newItem.on('click', reverse);
@@ -67,6 +73,26 @@ function initializeBoard()
     }
 
     randomizeCards();
+    $(window).on("load", function() 
+        {
+            let countDownTimer = setInterval(() => {
+                timer.$min.text(Math.floor(timer.time / 60));
+                timer.$sec.text(Math.ceil(timer.time % 60));
+                //  animate({
+                //             opacity: 0
+                //         }, 300, function () {
+                //     $(this).text(Math.ceil(timer.time % 60))
+                // });
+                // timer.$sec.animate({
+                //     opacity: 100
+                // }, 300);
+                timer.time--;
+                if (timer.time <= 0)
+                {
+                    clearInterval(countDownTimer);
+                }
+            }, 1000);
+        });
 }
 
 function randomizeCards()
@@ -117,35 +143,42 @@ function reverse()
         let $cardEl = $(this);
         let num = getCardNumber(this);
 
-        $cardEl.css({
-            backgroundImage: 'url(/res/animals/' + cardsArray[num].bg + ')',
-            backgroundSize: 'cover'
-        });
+        if (!cardsArray[num].isHidden)
+        {
+            $cardEl.css({
+                backgroundImage: 'url(/res/animals/' + cardsArray[num].bg + ')',
+                backgroundSize: 'cover'
+            });
 
-        if (pair.first === 0) {
-            // first = num;
-            pair.first = $cardEl;
-        }
-        else if (pair.second === 0) {
-            // second = num;
-            let firstNum = getCardNumber(pair.first);
+            if (pair.first === 0) {
+                // first = num;
+                pair.first = $cardEl;
+            }
+            else if (pair.second === 0) {
+                // second = num;
+                let firstNum = getCardNumber(pair.first);
 
-            if (num === firstNum) {
-                return;
+                if (num === firstNum) {
+                    return;
+                }
+
+                pair.second = $cardEl;
+
+                if (checkEquality(cardsArray[num].bg, cardsArray[firstNum].bg)
+                    && !cardsArray[num].isHidden && !cardsArray[firstNum].isHidden)
+                {
+                    pair.hideCard();
+                    cardsArray[num].isHidden = true;
+                    cardsArray[firstNum].isHidden = true;
+                    passedCounter += 2;
+                }
+                reverseCard(pair.first);
+                reverseCard(pair.second);
             }
 
-            pair.second = $cardEl;
-
-            if (checkEquality(cardsArray[num].bg, cardsArray[firstNum].bg)) {
-                pair.hideCard();
-                passedCounter += 2;
-            }
-            reverseCard(pair.first);
-            reverseCard(pair.second);
+            incrementTurnCounter();
+            checkWin();
         }
-
-        incrementTurnCounter();
-        checkWin();
     }
 
     // $('#cardsContainer').children('div').each(function (i) {
