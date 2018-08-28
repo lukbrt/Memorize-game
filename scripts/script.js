@@ -10,19 +10,28 @@
 
 
 let cardAmount = 16;
-let passedCounter = 0;
+let passedCounter = 0, turns = 0;
 let $cardContainer = $('#cardsContainer');
 let $cardSet = $('#cardsContainer.card');
+let $counterEl = $('#counter');
 let cardsArray = Array(cardAmount);
 let bgArray = ['bunny', 'cat', 'chicken', 'cow', 'dog', 'duck', 'pig', 'sheep'];
 let pair = {
         first: 0,
         second: 0,
 
-        hide: function()
+        hideCard: function()
         {
-            this.first.addClass('hidden');
-            this.second.addClass('hidden');
+            this.first.animate({opacity: 0}, () => {
+                $(this).addClass('hidden');
+            });
+            this.second.animate({ opacity: 0 }, () => {
+                $(this).addClass('hidden');
+            });
+            // this.second.fadeOut(300, 'swing', () => {
+            //     $(this).addClass('hidden');
+            // });
+            // this.second.fadeOut(300).addClass('hidden');
             passedCounter += 2;
         }
     };
@@ -53,7 +62,7 @@ function initializeBoard()
     for (let i = 0; i < cardAmount; i++) {
         $newItem = $('<div class="card"></div>');
         $newItem.attr('id', 'card' + i);
-        $newItem.on('click', reverseCard);
+        $newItem.on('click', reverse);
         $cardContainer.append($newItem);
     }
 
@@ -82,13 +91,13 @@ function checkEquality(firstBg, secondBg)
 }
 
 
-function reverseCard()
-{
-    if ((pair.first === 0 || pair.second === 0) && isReversable(this))
-    {
-        reverse(this);
-    }
-}
+// function reverseCard()
+// {
+//     if ((pair.first === 0 || pair.second === 0) && isReversable(this))
+//     {
+//         reverse(this);
+//     }
+// }
 
 // function canReverse()
 // {
@@ -96,48 +105,47 @@ function reverseCard()
 // }
 
 //TODO
-function isReversable(card)
+// function isReversable(card)
+// {
+//     return true;
+// }
+
+function reverse()
 {
-    return true;
-}
-
-function reverse(card)
-{
-    let $cardEl = $(card);
-    let num = getCardNumber(card);
-
-    $cardEl.css({
-        backgroundImage: 'url(/res/animals/' + cardsArray[num].bg + ')',
-        backgroundSize: 'cover'
-    });
-
-    if (pair.first === 0)
+    if ((pair.first === 0 || pair.second === 0)) 
     {
-        // first = num;
-        pair.first = $cardEl;
-    }
-    else if (pair.second === 0)
-    {
-        // second = num;
-        let firstNum = getCardNumber(pair.first);
+        let $cardEl = $(this);
+        let num = getCardNumber(this);
 
-        if (num === firstNum)
-        {
-            return;
+        $cardEl.css({
+            backgroundImage: 'url(/res/animals/' + cardsArray[num].bg + ')',
+            backgroundSize: 'cover'
+        });
+
+        if (pair.first === 0) {
+            // first = num;
+            pair.first = $cardEl;
+        }
+        else if (pair.second === 0) {
+            // second = num;
+            let firstNum = getCardNumber(pair.first);
+
+            if (num === firstNum) {
+                return;
+            }
+
+            pair.second = $cardEl;
+
+            if (checkEquality(cardsArray[num].bg, cardsArray[firstNum].bg)) {
+                pair.hideCard();
+                passedCounter += 2;
+            }
+            reverseCard(pair.first);
+            reverseCard(pair.second);
         }
 
-        pair.second = $cardEl;
-
-        if (checkEquality(cardsArray[num].bg, cardsArray[firstNum].bg))
-        {
-            pair.hide();
-        }
-            hideCard(pair.first);
-            hideCard(pair.second);
-    }
-    else if (pair.second !== 0)
-    {
-        alert("second not zero");
+        incrementTurnCounter();
+        checkWin();
     }
 
     // $('#cardsContainer').children('div').each(function (i) {
@@ -162,7 +170,7 @@ function reverse(card)
     
 // }
 
-function hideCard(card)
+function reverseCard(card)
 {
     // card.delay(1000).css({
     //     backgroundImage: 'url(/res/full-bloom.png)',
@@ -190,6 +198,27 @@ function hideCard(card)
 function getCardNumber(card)
 {
     return ($(card).attr("id")).substring(4);
+}
+
+function incrementTurnCounter()
+{
+    ++turns;
+    $counterEl
+        .animate({ opacity: 0 })
+        .queue(function () {
+            $(this).text(turns)
+                .dequeue()
+        })
+        .animate({ opacity: 1 }); 
+}
+
+//TODO
+function checkWin()
+{
+    if (passedCounter === cardAmount)
+    {
+        alert("Congratulations, you collected all animals. Wanna hunt again?");
+    }
 }
 
 function shuffleArray(array) 
