@@ -146,7 +146,7 @@ function reverse()
         if (!cardsArray[num].isHidden)
         {
             $cardEl.css({
-                backgroundImage: 'url(/res/animals/' + cardsArray[num].bg + ')',
+                backgroundImage: 'url(../res/animals/' + cardsArray[num].bg + ')',
                 backgroundSize: 'cover'
             });
 
