@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Pacifico');
 
 html {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     display: block;
     position: relative;
     background-color:#fff;
@@ -14,7 +14,7 @@ html {
 html::after {
     content: "";
     /* ../res/low-poly-forest.svg */
-    background-image: url('https: //lukbrt.github.io/Memorize-game/res/low-poly-forest.svg');
+    background-image: url('https://lukbrt.github.io/Memorize-game/res/low-poly-forest.svg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -240,3 +240,23 @@ h1#logo:hover:before
 {
     background-color: aqua;
 } */
+
+@media screen and (max-width: 1919px)
+{
+    .container
+    {
+        width: 800px;
+    }
+    #cardsContainer
+    {
+        margin: auto;
+        margin-top: 40px;
+    }
+    
+    .card
+    {
+        width: 100px;
+        margin: 10px 50px;
+        height: 150px;
+    }
+}
