@@ -13,7 +13,7 @@ html {
 
 html::after {
     content: "";
-    background-image: url(res/low-poly-forest.svg);
+    background-image: url(../res/low-poly-forest.svg);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
