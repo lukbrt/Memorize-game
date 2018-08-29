@@ -6,6 +6,9 @@ html {
     display: block;
     position: relative;
     background-color:#fff;
+
+    font-family: 'Pacifico', cursive;
+    font-size: 1.2em;
 }
 
 html::after {
@@ -36,11 +39,6 @@ nav
     display: flex;
     align-items: center;
     margin: 15px 10px;
-}
-
-h1, h2, h3
-{
-    font-family: 'Pacifico', cursive;
 }
 
 h1#logo
@@ -96,6 +94,12 @@ h1#logo:hover:before
     justify-content: center;
 
     transform: skew(-20deg, -20deg);
+    transition: all 0.3s ease-in-out 0s;
+}
+
+#counter:hover
+{
+    transform: skew(-40deg, -10deg);
 }
 
 #timer
@@ -160,10 +164,64 @@ h1#logo:hover:before
     border: 2px solid rgb(248, 227, 225);
     box-sizing: border-box;
 
-    background-image: url(/res/full-bloom.png);
+    background-image: url(../res/full-bloom.png);
 
-    perspective: 160px;
+    /* perspective: 160px; */
     /* background-size: cover; */
+}
+
+/* .flex-container
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+} */
+#endStmt
+{
+    display: none;
+}
+
+.statement
+{
+    font-size: 1.6em;
+    line-height: 1.6em;
+
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    text-align: center;
+    margin-top: 45%;
+}
+
+.button
+{
+    padding: 1em .5em;
+    margin: 30px;
+    background-color: #E3FF66;
+    border-radius: 50%;
+    box-shadow: 30px 10px rgba(13, 203, 255, .5),
+                -10px -15px rgba(255, 0, 0, .6),
+                -30px 20px rgba(13, 2, 33, .7),
+                40px -15px rgba(76, 255, 76, .8);
+    opacity: 0.8;
+    text-align: center;
+    display: inline-block;
+    /* position: relative; */
+    transition: all 0.4s ease;
+
+    text-decoration: none;
+    color: #0D0221;
+}
+
+.button:hover
+{
+    content: '';
+    background-color: rgb(220, 255, 64);
+    box-shadow: none;
+    opacity: 1;
+    /* position: absolute; */
+    z-index: -1;
 }
 
 /* .card:hover::before

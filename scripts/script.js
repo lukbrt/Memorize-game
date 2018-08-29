@@ -10,6 +10,8 @@
 
 
 let cardAmount = 16;
+const INITIAL_TIME = 120;
+//********TEST************* passedCounter = 0
 let passedCounter = 0, turns = 0;
 let $cardContainer = $('#cardsContainer');
 let $cardSet = $('#cardsContainer.card');
@@ -38,8 +40,9 @@ let timer = {
     $timer: $('timer'),
     $min: $('#timer span#min'),
     $sec: $('#timer span#sec'),
-    time: 120    //120
+    time: INITIAL_TIME //120
 };
+let countDownTimer;
 
 let swapCounter = 0;
 // let first = false, second = false;
@@ -62,7 +65,10 @@ initializeBoard();
 
 function initializeBoard()
 {
+    // turns = 0;
+    // passedCounter = 0;
     let $newItem;
+    $cardContainer.css('opacity', 0);
 
     for (let i = 0; i < cardAmount; i++) 
     {
@@ -73,31 +79,8 @@ function initializeBoard()
     }
 
     randomizeCards();
-    $(window).on("load", function() 
-        {
-            let countDownTimer = setInterval(() => {
-                timer.$min.text(Math.floor(timer.time / 60));
-                let seconds = Math.ceil(timer.time % 60);
-                if (seconds === 0)
-                {
-                    seconds = '00';
-                }
-                timer.$sec.text(seconds);
-                //  animate({
-                //             opacity: 0
-                //         }, 300, function () {
-                //     $(this).text(Math.ceil(timer.time % 60))
-                // });
-                // timer.$sec.animate({
-                //     opacity: 100
-                // }, 300);
-                timer.time--;
-                if (timer.time <= 0)
-                {
-                    clearInterval(countDownTimer);
-                }
-            }, 1000);
-        });
+    $cardContainer.animate({'opacity': 1}, 'slow');
+    $(window).on("load", timerEventInitializer);
 }
 
 function randomizeCards()
@@ -156,7 +139,7 @@ function reverse()
                     rotateY: '180deg'
                 }, 'slow')
                 .css({
-                        backgroundImage: 'url(../res/animals/' + cardsArray[num].bg + ')',
+                        backgroundImage: 'url(res/animals/' + cardsArray[num].bg + ')',
                         backgroundSize: 'cover'
             });
 
@@ -205,29 +188,16 @@ function reverse()
 
 }
 
-// function hideCards()
-// {
-//     let firstCard = $('card' + first),
-//         secondCard = $('card' + second);
-
-    
-// }
-
 function reverseCard(card)
 {
-    // card.delay(1000).css({
-    //     backgroundImage: 'url(/res/full-bloom.png)',
-    //     backgroundSize: 'initial'
-    // });
 
     setTimeout(() =>
         {
         $(card).transition({
                 rotateY: '0deg',
-                // perspective: '160px'
             }, 'slow')
             .css({
-                backgroundImage: 'url(/res/full-bloom.png)',
+                backgroundImage: 'url(../res/full-bloom.png)',
                 backgroundSize: 'initial'
             });
 
@@ -262,10 +232,72 @@ function incrementTurnCounter()
 //TODO
 function checkWin()
 {
-    if (passedCounter === cardAmount)
+    if (passedCounter === cardAmount || timer.time <= 0)
     {
-        alert("Congratulations, you collected all animals. Wanna hunt again?");
+        let $endEl = $('#endStmt');
+        let endCode = '';
+
+        if (passedCounter === cardAmount) 
+        {
+            endCode = '<p class="statement">Congratulations, you collected all animals.<br>Wanna hunt again?</p><div style="margin:auto; text-align: center"> <a href="#" class="button">YES</a></div >';
+            // $cardContainer.append($winEl);
+            // alert("Congratulations, you collected all animals. Wanna hunt again?");
+        }
+        else if (timer.time <= 0) 
+        {
+            let failStatement = 'All Animals have fled. You collected only <strong style="color: red;">' + passedCounter + '</strong> animals... :(<br>Do you want to try again in another place?';
+            endCode = '<p class="statement">' + failStatement + '</p><div style="margin:auto; text-align: center"> <a href="#" class="button">YES</a></div >';
+        }
+
+        setTimeout(() => {
+
+            clearInterval(countDownTimer);
+            $endEl.html(endCode);
+            $endEl.css('display', 'block');
+            $button = $endEl.find('div a.button');
+            $button.on('click', () => {
+                //reset*****************
+                // e.preventDefault();
+
+                $endEl.animate({ 'opacity': 0 }, 'slow').addClass('hidden');
+                reset();
+            });
+            // $winEl.addClass('flex-container');
+            // let $statement = $('<p>').html("Congratulations, you collected all animals. Wanna hunt again?<br>");
+            // $statement.addClass('statement');
+            // let $acceptButton = $('<div>').text("YES");
+            // $acceptButton.addClass('button');
+            // $winEl.append($statement);
+            // $winEl.append($acceptButton);
+
+            $cardContainer.empty();
+            $('.container').append($endEl);
+        }, 1000);
     }
+}
+
+function timerEventInitializer()
+{
+    countDownTimer = setInterval(() => {
+        timer.$min.text(Math.floor(timer.time / 60));
+        let seconds = Math.ceil(timer.time % 60);
+        if (seconds === 0) {
+            seconds = '00';
+        }
+        timer.$sec.text(seconds);
+        //  animate({
+        //             opacity: 0
+        //         }, 300, function () {
+        //     $(this).text(Math.ceil(timer.time % 60))
+        // });
+        // timer.$sec.animate({
+        //     opacity: 100
+        // }, 300);
+        timer.time--;
+        if (timer.time <= 0) {
+            clearInterval(countDownTimer);
+        }
+    }, 1000);
 }
 
 function shuffleArray(array) 
@@ -277,4 +309,19 @@ function shuffleArray(array)
         array[i] = array[j];
         array[j] = temp;
     }
+}
+
+function reset()
+{
+    turns = 0;
+    passedCounter = 0;
+    timer.time = INITIAL_TIME;
+    timer.$min.text(Math.floor(INITIAL_TIME / 60));
+    timer.$sec.text(Math.ceil(INITIAL_TIME % 60));
+    $counterEl.text(turns);
+    pair.first = 0;
+    pair.second = 0;
+
+    initializeBoard();
+    timerEventInitializer();
 }
