@@ -13,7 +13,8 @@ html {
 
 html::after {
     content: "";
-    background-image: url(../res/low-poly-forest.svg);
+    /* ../res/low-poly-forest.svg */
+    background-image: url('https: //lukbrt.github.io/Memorize-game/res/low-poly-forest.svg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
