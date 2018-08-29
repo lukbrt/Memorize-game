@@ -197,7 +197,7 @@ function reverseCard(card)
                 rotateY: '0deg',
             }, 'slow')
             .css({
-                backgroundImage: 'url(../res/full-bloom.png)',
+                backgroundImage: 'url(res/full-bloom.png)',
                 backgroundSize: 'initial'
             });
 
